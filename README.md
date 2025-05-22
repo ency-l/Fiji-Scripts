@@ -1,5 +1,6 @@
 Updated: 2025-05-21
-Only this repo and the contents of __Drive 8\Alex\4_IJ Macros__ are maintained. Copies of scripts in other places might be dated.
+
+> Only this repo and the contents of <ins>Drive 8\Alex\4_IJ Macros</ins> are maintained. Copies of scripts in other places might be dated.
 
 ## File list
 
@@ -24,17 +25,19 @@ Only processes the currently selected image. Use this if the allOpenFiles versio
 
 The 100μm version of BFscalebar50. Note that this also only processes the currently selected image.
 
+> *TODO: Make an "all open files" and "specific folder" version of this*
+
 6. **CRMnuc**
 
 Measures the intensity of C2 in the nucleus and the cytoplasm area immediately surrounding it. The later is measured for calculating N/C fraction. Currently this only works with one image open.
 
-*TODO: Change input method to folder*
+> *TODO: Change input method to folder*
 
 7. **FolderSplitandSave**
 
 Takes folder of multichannel images, split them and save them to a different folder. This one currently has a bug where the last file in a folder won't be processed.
 
-*TODO: fix the bug where one file will not get processed*
+> *TODO: fix the bug where one file will not get processed*
 
 8. **generalPurposeAllOpenFiles_template**
 
@@ -44,7 +47,7 @@ A template for creating more scripts that apply a set of actions to all open ima
 
 Only works when only 1 image is open. Measures the intensity of c3 at nuclear envelope (defined as a 5px line along the nucleus) and inside the nucleus (for normalization.) Currently needs to manually select desired ROI after segmenting.
 
-*TODO: Change input method to folder; automate ROI selection*
+> *TODO: Change input method to folder; automate ROI selection*
 
 10. **saveAllOpenImags**
 
@@ -52,9 +55,9 @@ Self explanatory. Save everything that's open to a specified folder with the cur
 
 11. **scalebar100split** 
 
-Scale bar script for multichannel images. Split the channels and add a white 100μm scale bar (20px, bottom right, 30px text) to the composite RGB image. This script is intended for creating images for __presentation__, NOT analysis. What this means is that it changes individual channel files to RGB color mode. Currently needs to manually save the files after they are created.
+Scale bar script for multichannel images. Split the channels and add a white 100μm scale bar (20px, bottom right, 30px text) to the composite RGB image. This script is intended for creating images for <ins>presentation</ins>, NOT analysis. What this means is that it changes individual channel files to RGB color mode. Currently needs to manually save the files after they are created.
 
-*TODO: Automate saving and closing temp files created during processing.*
+> *TODO: Automate saving and closing temp files created during processing.*
 
 12. **MicroGliaXPO**
 

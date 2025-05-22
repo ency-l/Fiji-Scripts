@@ -82,7 +82,7 @@ selectWindow("SelectedNuclei");
 filename = title+"_Microglia_Nuc";
 saveAs("Tiff", outputDir + filename);
 close("*");
-run("Read and Write Excel", "dataset_label="+title);
+run("Read and Write Excel", "dataset_label="+title", file=["outputDir"/Measurement_Results.xlsx]");
 run("Clear Results");
 roiManager("deselect");
 roiManager("delete");

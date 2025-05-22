@@ -1,4 +1,5 @@
 Updated: 2025-05-21
+Only this repo and the contents of __Drive 8\Alex\4_IJ Macros__ are maintained. Copies of scripts in other places might be dated.
 
 ## File list
 

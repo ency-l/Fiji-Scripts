@@ -14,5 +14,5 @@ for (i = 1; i <= numImages; i++) {
     title = getTitle();
     saveAs("Tiff", saveDir + i + "_" + title + ".tif");
 }
-
+run("Close All");
 print("All open images saved as TIFF in: " + saveDir);

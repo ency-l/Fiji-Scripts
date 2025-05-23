@@ -51,7 +51,7 @@ Only works when only 1 image is open. Measures the intensity of c3 at nuclear en
 
 10. **saveAllOpenImags**
 
-Self explanatory. Save everything that's open to a specified folder with the current window titles.
+Self explanatory. Save everything that's open to a specified folder with the current window titles, then close all open images. (Good for selecting ROIs in QuPath, then sending them all to IJ and running this to save them.)
 
 11. **scalebar100split** 
 

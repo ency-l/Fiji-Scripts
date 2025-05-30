@@ -33,11 +33,10 @@ Measures the intensity of C2 in the nucleus and the cytoplasm area immediately s
 
 > *TODO: Change input method to folder*
 
-7. **FolderSplitandSave**
+7. **Folder_Split_ScaleBar_customizable**
 
-Takes folder of multichannel images, split them and save them to a different folder. This one currently has a bug where the last file in a folder won't be processed.
+General use tool that processes a whole folder of the same type of images. Allow user to choose between brightfield (only adds scalebar) and fluorescent multichannel (splits channel and adds scalebar to a composite image) and customize scalebar features.
 
-> *TODO: fix the bug where one file will not get processed*
 
 8. **generalPurposeAllOpenFiles_template**
 

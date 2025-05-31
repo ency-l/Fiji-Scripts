@@ -37,18 +37,21 @@ Measures the intensity of C2 in the nucleus and the cytoplasm area immediately s
 
 General use tool that processes a whole folder of the same type of images. Allow user to choose between brightfield (only adds scalebar) and fluorescent multichannel (splits channel and adds scalebar to a composite image) and customize scalebar features.
 
+8. **Single_Split_ScaleBar_customizable**
 
-8. **generalPurposeAllOpenFiles_template**
+The same thing as the one above but only executes on one file. Good for testing what you want before processing the batch.
+
+9. **generalPurposeAllOpenFiles_template**
 
 A template for creating more scripts that apply a set of actions to all open images.
 
-9. **NPCMeasurementNormalized**
+10. **NPCMeasurementNormalized**
 
 Only works when only 1 image is open. Measures the intensity of c3 at nuclear envelope (defined as a 5px line along the nucleus) and inside the nucleus (for normalization.) Currently needs to manually select desired ROI after segmenting.
 
 > *TODO: Change input method to folder; automate ROI selection*
 
-10. **saveAllOpenImags**
+11. **saveAllOpenImags**
 
 Self explanatory. Save everything that's open to a specified folder with the current window titles, then close all open images. (Good for selecting ROIs in QuPath, then sending them all to IJ and running this to save them.)
 

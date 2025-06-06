@@ -1,6 +1,8 @@
+
 // ImageJ Macro: Process and Split TIFF Files, has a brightfield and fluor (multi channel) mode.
 // Will operate an entire input folder and output to a given folder
 // Prompt user to select the input and output directory
+setBatchMode("hide");
 inputDir = getDirectory("Choose a folder containing TIFF files");
 outputDir = getDirectory("Choose a folder to save processed TIFF files");
 

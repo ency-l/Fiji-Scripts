@@ -13,7 +13,7 @@ General use tool that processes a whole folder of the same type of images. Allow
 
 The same thing as the one above but only executes on one file. Good for testing what you want before processing the batch.
 
-- **saveAllOpenImags**
+- **saveAllOpenImgs**
 
 Self explanatory. Save everything that's open to a specified folder with the current window titles, then close all open images. (Good for selecting ROIs in QuPath, then sending them all to IJ and running this to save them.)
 

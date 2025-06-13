@@ -17,6 +17,9 @@ The same thing as the one above but only executes on one file. Good for testing 
 
 Self explanatory. Save everything that's open to a specified folder with the current window titles, then close all open images. (Good for selecting ROIs in QuPath, then sending them all to IJ and running this to save them.)
 
+-**FolderSplitandSave**
+
+Splits all multichannel tiffs in a folder and save them to another folder. Technically redundant with the split&scalebar tool but there are cases where it's easier to just use this one.
 
 - **generalPurposeAllOpenFiles_template**
 

@@ -6,7 +6,9 @@ setBatchMode("hide");
 processFolder(input);
 run("Read and Write Excel","file=["+output+"/Results.xlsx] sheet="+getResult("Case",nResults-1)+" dataset_label="+getResult("Case",nResults-1));
 Table.deleteRows(0,nResults-1); //clear results.
-
+//selectWindow("Log");
+//saveAs("results",output+File.separator+"logs.txt");
+waitForUser("Done!");
 
 // function to scan folders/subfolders/files to find files with correct suffix
 function processFolder(input) {
@@ -39,9 +41,10 @@ print(">> Initializing. ");
 print("\\Update:>> Initializing. (Done)");
 
 
-	if(i>0){	//don't run this on first loop (there are no results to compare to)
+	if(i>0 && nResults>0){	//don't run this on first loop (there are no results to compare to)
 print(">> Checking case names");
 		prevCase=getResult("Case",nResults-1);
+		
 		if(FileName[1]!=prevCase){ //if the case name of current file is different from the last file processed:	
 			run("Read and Write Excel","file=["+output+"/Results.xlsx] sheet="+prevCase+" dataset_label="+prevCase);   //write all existing results into excel under the sheet named after the case.
 			Table.deleteRows(0,nResults-1); //clear results.
@@ -81,6 +84,7 @@ print(">> Segmenting Nuclei");
 print("\\Update:>> Segmenting Nuclei (Done)");
 
 print(">> Finding IBA-1-associated nuclei");
+
 	RoiManager.select(roiManager("count")-1); //select  most recent item in ROIM (the raw compound DAPI mask)
 	if (Roi.getType=="composite"){
 		roiManager("split");
@@ -97,6 +101,7 @@ print(">> Finding IBA-1-associated nuclei");
 		for(i=0;i<i_NucAllList.length;i++){
 			roiManager("Select",newArray(i_IBA,i_NucAllList[i]));	//select the IBA mask and one of the nucleus
 			roiManager("AND");										//AND operation to find overlap
+			run("Create Selection");
 			if (selectionType()!=-1) {
 				roiManager("Add");										//add to ROIM
 				RoiManager.select(roiManager("count")-1); 				//select the newly added overlap ROI
@@ -115,31 +120,42 @@ print(">> Finding IBA-1-associated nuclei");
 		}
 	}
 	else{
-		i_NucAllList=newArray(roiManager("index"));	
+		i_NucAllList=newArray(roiManager("index"),0);
+		i_NucAllList=Array.deleteIndex(i_NucAllList, 1);
 		t_NucAllList=newArray(i_NucAllList.length);
 		testArea=getValue("Area");
 		roiManager("Select",newArray(i_IBA,roiManager("count")-1));	//select the IBA mask and one of the nucleus
 		roiManager("AND");										//AND operation to find overlap
-		roiManager("Add");										//add to ROIM
-		RoiManager.select(roiManager("count")-1); 				//select the newly added overlap ROI
-		OverlapSize=getValue("Area");							//measure size
-		if (OverlapSize< 0.5*testArea){					//if overlap is smaller than half of the nucleus's whole size
-			roiManager("delete");								//delete the temp overlap ROI
-			t_NucAllList[0]=(false);
+			if (selectionType()==-1){
+				t_NucAllList[0]=(false);
+			}
+			else{
+				roiManager("Add");										//add to ROIM
+				RoiManager.select(roiManager("count")-1); 				//select the newly added overlap ROI
+				OverlapSize=getValue("Area");							//measure size
+				if (OverlapSize< 0.5*testArea){					//if overlap is smaller than half of the nucleus's whole size
+					roiManager("delete");								//delete the temp overlap ROI
+					t_NucAllList[0]=(false);
+				}
+				else{
+					roiManager("delete");								//delete the temp overlap ROI
+					print(">>>> Nucleus found.");
+					RoiManager.select(i_NucAllList[0]);
+					t_NucAllList[0]=true;	
+				}
+			}
 		}
-		else{
-			roiManager("delete");								//delete the temp overlap ROI
-			print(">>>> Nucleus found.");
-			t_NucAllList[0]=(true);	
-		}
-	}
 	newImage("selectedNuc", "8-bit black", xSize,ySize,1);		//prepare a new blank image of the same size
 	for(i=0;i<i_NucAllList.length;i++){
 		if (t_NucAllList[i]==true){			//if this nuc passed the test
+
 		roiManager("Select",i_NucAllList[i]); //select it by its index #
 		roiManager("fill");					//draw it on the new mask image
 		}
 	}
+	selectImage("selectedNuc");
+	if (getValue("Mean")==0) {print(">> WARNING:No microglial nucleus detected. Skipping "+title+".");} //nuc checkpoint
+	else{
 	run("Keep Largest Region");			
 	run("Create Selection");
 	roiManager("Add");										//add to ROIM
@@ -150,9 +166,7 @@ print(">> Finding IBA-1-associated nuclei");
 		RoiManager.delete(i);
 		}
 	close("selectedNuc");
-	selectImage("selectedNuc-largest");
-	if (getValue("Mean")==0) {print(">> WARNING:No microglial nucleus detected. Skipping "+title+".");}
-	else{
+	//selectImage("selectedNuc-largest");
 print(">>>> Nuclei mask saved at output path. (Done)");
 
 print(">> Segmenting Cytoplasm");
@@ -162,8 +176,8 @@ print(">> Segmenting Cytoplasm");
 	roiManager("fill");
 	run("Image Calculator...", "image1=IBA operation=Subtract image2=selectedNuc-largest create");
 	run("Create Selection");
-	}
-	if (selectionType()==-1){print(">> WARNING:No cytoplasm detected. Skipping "+title+".");}
+	
+	if (selectionType()==-1){print(">> WARNING:No cytoplasm detected. Skipping "+title+".");} //cyt checkpoint
 	else{
 		roiManager("Add");
 		RoiManager.select(roiManager("count")-1);
@@ -200,11 +214,13 @@ print(">> Writing Results.");
 	setResult("CRM_ratio", nResults-1, Ratio);
 	setResult("IBA_N", nResults-1, YMean[0]);
 	setResult("IBA_C", nResults-1, YMean[1]);
-	setResult("Area_N", nResults-1, Area[0]);
-	setResult("Area_C", nResults-1, Area[1]);
+	setResult("Area_N", nResults-1, Area[0]/9.4673);
+	setResult("Area_C", nResults-1, Area[1]/9.4673);  //convert px to um
 	updateResults();
 print("\\Update:>> Writing Results. (Done)");
 	}
+	}
+
 close("*");
 roiManager("deselect");
 roiManager("delete");

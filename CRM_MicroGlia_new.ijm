@@ -1,13 +1,7 @@
-/*
- * Macro template to process multiple images in a folder
- */
-
 #@ File (label = "Input directory", style = "directory") input
 #@ File (label = "Output directory", style = "directory") output
 #@ String (label = "File suffix", value = ".tif") suffix
 
-// See also Process_Folder.py for a version of this code
-// in the Python scripting language.
 setBatchMode("hide");
 processFolder(input);
 run("Read and Write Excel","file=["+output+"/Results.xlsx] sheet="+getResult("Case",nResults-1)+" dataset_label="+getResult("Case",nResults-1));

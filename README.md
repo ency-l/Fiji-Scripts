@@ -1,4 +1,4 @@
-Updated: 2025-06-12
+Updated: 2025-06-24
 
 > Only this repo and the contents of <ins>Drive 8\Alex\4_IJ Macros</ins> are maintained. Copies of scripts in other places might be dated.
 
@@ -40,19 +40,23 @@ For measuring TDP-43 in white matter tracts in spinal cord. Takes green(c2) TDP 
 
 - **NPCMeasurementNormalized**
 
-Takes folder input. Measures the intensity of c3 at nuclear envelope (defined as a 1px line along the nucleus) and inside the nucleus (for normalization.) Currently needs to manually select desired ROI after segmenting. Output data to a spreadsheet at a path of choice.
+Takes folder input. Measures the intensity of c3 at nuclear envelope (defined as a 1px line along the nucleus) and inside the nucleus (for normalization.) Currently needs to manually select desired ROI after segmenting. Output data to a spreadsheet at a path of choice.  
 
-
-- **MicroGliaXPO**
-
- For a given input folder, detects all nuclei that have overlap with microglia marker IBA1, segment these regions and measure the XPO (c2, green) intensity in these regions. Export measurements to an excel sheet at a specified output folder. Measurement from diff files will be saved as adjacent columns in the same spreadsheet. Also saves a binary tiff of the region being measured from each input file in the output folder.
 
 - **CRM_neurons_new**
 
 Takes folder input and output measurements to an .xslx in downloads folder (designed for multiple folders that belongs to the same dataset, fixed output to avoid having to specify output every time a diff folder is processed.) Needs manual selection of target cell nucleus after auto thresholding, then measures CRM (XPO-1) intensity at the nucleus and cytoplasm (defined by the 1.5px "doughnut" around the nucleus, for the lack of better ways to reliably define cytoplasm.) Data is saved to account for the special file naming scheme in generation of the source tiff images. It also adds the cell CRM type classification (which was stored in the tiff file name) into measurement results for ease of organization. Each case (input folder) is saved as a separate sheet in the same xslx file.
 
+- **CRM_MicroGlia_new**
+
+The microglia version of the script above. Fully automated. Nucleus is segmented and those with bad IBA1 overlap (<50%) is removed, then only the largest object is kept (remove random nuc fragments that might got included on the edge). Measures CRM intensity at nucelus and cytoplasm (created by subtracting nucleus region from full IBA1 ROI.) Improved log function compared to the neuron version.
+
 # Archived
 These srcipts are obsolete and have better alternatives in the root menu.
+
+- **MicroGliaXPO**
+
+ For a given input folder, detects all nuclei that have overlap with microglia marker IBA1, segment these regions and measure the XPO (c2, green) intensity in these regions. Export measurements to an excel sheet at a specified output folder. Measurement from diff files will be saved as adjacent columns in the same spreadsheet. Also saves a binary tiff of the region being measured from each input file in the output folder.
 
 - **CRMnuc**
 

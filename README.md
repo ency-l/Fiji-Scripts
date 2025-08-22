@@ -21,10 +21,14 @@ Self explanatory. Save everything that's open to a specified folder with the cur
 
 Splits all multichannel tiffs in a folder and save them to another folder. Intended for preparing single channel images for downstream analysis.
 
+
+- **saveSelectedRegions.groovy**
+
+Groovy script to export ROI annotations in Qupath. It will save all *selected* annotations as tiffs in `PROJECT_BASE_DIR/Export`. Original annoation borders are preserved as overlay.
+
 - **generalPurposeAllOpenFiles_template**
 
 A template for creating more scripts that apply a set of actions to all open images.
-
 
 ## Axonal TDP-43 Project
 - **AxonalTDP_single_full** 

@@ -1,6 +1,6 @@
-Updated: 2025-06-25
+Updated: 2025-8-21
 
-> Only this repo and the contents of <ins>Drive 8\Alex\4_IJ Macros</ins> are maintained. Copies of scripts in other places might be dated.
+>Changes made in <ins>Drive 8\Alex\4_IJ Macros</ins> is pushed to this repo. Any other copies of scripts in other places are not maintained and are likley dated.
 
 # File list
 ## General Purpose Tools
@@ -21,6 +21,11 @@ Self explanatory. Save everything that's open to a specified folder with the cur
 
 Splits all multichannel tiffs in a folder and save them to another folder. Technically redundant with the split&scalebar tool but there are cases where it's easier to just use this one.
 
+- **FolderSplitandSave**
+
+Oops seems I accidently remade the same thing. Might compare and delete one later.
+
+
 - **generalPurposeAllOpenFiles_template**
 
 A template for creating more scripts that apply a set of actions to all open images.
@@ -34,6 +39,11 @@ A template for creating more scripts that apply a set of actions to all open ima
 - **AxonalTDP_single_full** 
 
 For measuring TDP-43 in white matter tracts in spinal cord. Takes green(c2) TDP and red (c3) NFH. This script looks for a round NHF+ area that is representative of a crossected axon. Current analyze particles parameters are set to 1-200 px; 0.5-1 cir. Measures area and mean.
+
+## Ataxin-2 Project
+- **Ataxin2Intensity**
+
+For measuring intensity of Ataxin-2 and related proteins of interest in neurons. PABP1 co-loc analysis and TDP-43 aggregate co-loc analysis will be added in the future.
 
 ## SOD Microglia Exportin/Nuc Pore Complex Project (Gulshan) 
 

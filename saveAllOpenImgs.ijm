@@ -12,6 +12,7 @@ if (numImages == 0) {
 for (i = 1; i <= numImages; i++) {
     selectImage(i);
     title = getTitle();
+//newTitle=substring(title,2,49);
     saveAs("Tiff", saveDir + i + "_" + title + ".tif");
 }
 run("Close All");

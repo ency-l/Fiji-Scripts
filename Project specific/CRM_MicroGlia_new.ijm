@@ -1,3 +1,4 @@
+
 #@ File (label = "Input directory", style = "directory") input
 #@ File (label = "Output directory", style = "directory") output
 #@ String (label = "File suffix", value = ".tif") suffix
@@ -6,14 +7,16 @@ setBatchMode("hide");
 processFolder(input);
 run("Read and Write Excel","file=["+output+"/Results.xlsx] sheet="+getResult("Case",nResults-1)+" dataset_label="+getResult("Case",nResults-1));
 Table.deleteRows(0,nResults-1); //clear results.
+//selectWindow("Log");
+//saveAs("results",output+File.separator+"logs.txt");
 waitForUser("Done!");
 
-// function to scan folders to find files with correct suffix
+// function to scan folders/subfolders/files to find files with correct suffix
 function processFolder(input) {
 	list = getFileList(input);
 	list = Array.sort(list);
 	for (i = 0; i < list.length; i++) {
-		//if(File.isDirectory(input + File.separator + list[i]))   don't want recursive search
+		//if(File.isDirectory(input + File.separator + list[i]))
 		//	processFolder(input + File.separator + list[i]);
 		if(endsWith(list[i], suffix))
 			processFile(input, output, list[i]);
@@ -21,6 +24,7 @@ function processFolder(input) {
 }
 
 function processFile(input, output, file) {
+
 	open(input+File.separator+list[i]);
 	print("Processing: " + input + File.separator + file+" ("+i+1+"/"+list.length+")");
 	
@@ -37,9 +41,11 @@ print(">> Initializing. ");
 	//results arrays. [0] Nuc [2] Cyt.
 print("\\Update:>> Initializing. (Done)");
 
-	if(i>0 && nResults>0){	//don't run this on first loop (there are no results to compare to) or if the results are empty (from skipping a whole case)
+
+	if(i>0 && nResults>0){	//don't run this on first loop (there are no results to compare to)
 print(">> Checking case names");
 		prevCase=getResult("Case",nResults-1);
+		
 		if(FileName[1]!=prevCase){ //if the case name of current file is different from the last file processed:	
 			run("Read and Write Excel","file=["+output+"/Results.xlsx] sheet="+prevCase+" dataset_label="+prevCase);   //write all existing results into excel under the sheet named after the case.
 			Table.deleteRows(0,nResults-1); //clear results.
@@ -79,23 +85,23 @@ print(">> Segmenting Nuclei");
 print("\\Update:>> Segmenting Nuclei (Done)");
 
 print(">> Finding IBA-1-associated nuclei");
+
 	RoiManager.select(roiManager("count")-1); //select  most recent item in ROIM (the raw compound DAPI mask)
-	if (Roi.getType=="composite"){	//split if there are multiple nuclei
+	if (Roi.getType=="composite"){
 		roiManager("split");
 		roiManager("delete");			//remove raw compound DAPI mask
 		i_NucAllList=newArray();					
 		a_NucAllList=newArray();					
 		for(i=i_IBA+1; i<RoiManager.size; i++){						//go through everything except the IBA mask (should be all splitted nuc)
 			roiManager("select", i);
-			i_NucAllList=Array.concat(i_NucAllList,roiManager("index"));	//saving the index of splitted nuc into an array for retreival. 
-			a_NucAllList=Array.concat(a_NucAllList,getValue("Area"));	//saving the area of splitted nuc into an array for testing overlap later.
+			i_NucAllList=Array.concat(i_NucAllList,roiManager("index"));//saving the index of splitted nuc into an array for retreival
+			a_NucAllList=Array.concat(a_NucAllList,getValue("Area"));//saving the area of splitted nuc into an array for testing overlap later
 		}
 	
-		t_NucAllList=newArray(i_NucAllList.length);				//new list that is the same size as the # of nucs to store test results.
-			// the indeces in all NucAllLists (i_, a_, t_) should match each other and refer to the same ROI. That is to say, for ROI x, its info is stored in i_[n]= ROIM index of x; a[n]= area of x; t_[n]= overlap test of x.		
+		t_NucAllList=newArray(i_NucAllList.length);	//new list that is the same size as the # of nucs to store test results
 		for(i=0;i<i_NucAllList.length;i++){
 			roiManager("Select",newArray(i_IBA,i_NucAllList[i]));	//select the IBA mask and one of the nucleus
-			roiManager("AND");					//AND operation to find overlap
+			roiManager("AND");										//AND operation to find overlap
 			run("Create Selection");
 			if (selectionType()!=-1) {
 				roiManager("Add");										//add to ROIM

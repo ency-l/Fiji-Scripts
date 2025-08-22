@@ -1,6 +1,6 @@
-Updated: 2025-8-21
+Updated: 2025-8-22
 
->Changes made in <ins>Drive 8\Alex\4_IJ Macros</ins> is pushed to this repo. Any other copies of scripts in other places are not maintained and are likley dated.
+>This repository is a remote version of `Drive 8\Alex\4_IJ Macros`. Copies of scripts in other places are not maintained and are likley dated.
 
 # File list
 ## General Purpose Tools
@@ -17,23 +17,14 @@ The same thing as the one above but only executes on one file. Good for testing 
 
 Self explanatory. Save everything that's open to a specified folder with the current window titles, then close all open images. (Good for selecting ROIs in QuPath, then sending them all to IJ and running this to save them.)
 
-- **FolderSplitandSave**
+- **folderSplitChannel**
 
-Splits all multichannel tiffs in a folder and save them to another folder. Technically redundant with the split&scalebar tool but there are cases where it's easier to just use this one.
-
-- **folderSplitter**
-
-Oops seems I accidently remade the same thing. Might compare and delete one later.
-
+Splits all multichannel tiffs in a folder and save them to another folder. Intended for preparing single channel images for downstream analysis.
 
 - **generalPurposeAllOpenFiles_template**
 
 A template for creating more scripts that apply a set of actions to all open images.
 
-
-> *TODO: Automate saving and closing temp files created during processing.*
-> 
-> *Integrate this into QuPath if possible*
 
 ## Axonal TDP-43 Project
 - **AxonalTDP_single_full** 
@@ -43,7 +34,7 @@ For measuring TDP-43 in white matter tracts in spinal cord. Takes green(c2) TDP 
 ## Ataxin-2 Project
 - **Ataxin2Intensity**
 
-For measuring intensity of Ataxin-2 and related proteins of interest in neurons. PABP1 co-loc analysis and TDP-43 aggregate co-loc analysis will be added in the future.
+For measuring intensity of Ataxin-2 and related proteins of interest in neurons. PABP1 and TDP-43 agg co-loc analysis will be added in the future.
 
 ## SOD Microglia Exportin/Nuc Pore Complex Project (Gulshan) 
 
@@ -62,7 +53,7 @@ Takes folder input and output measurements to an .xslx in downloads folder (desi
 The microglia version of the script above. Fully automated. Nucleus is segmented and those with bad IBA1 overlap (<50%) is removed, then only the largest object is kept (remove random nuc fragments that might got included on the edge). Measures CRM intensity at nucelus and cytoplasm (created by subtracting nucleus region from full IBA1 ROI.) Improved log function compared to the neuron version.
 
 # Archived
-These srcipts are obsolete and have better alternatives in the root menu.
+These scripts are obsolete and have better alternatives in the root menu.
 
 - **MicroGliaXPO**
 
@@ -72,12 +63,9 @@ These srcipts are obsolete and have better alternatives in the root menu.
 
 Measures the intensity of C2 in the nucleus and the cytoplasm area immediately surrounding it. The later is measured for calculating N/C fraction. Currently this only works with one image open.
 
-> *TODO: Change input method to folder*
-
 - **BFscalebar50_allOpenFiles**
 
 Adds a horizontol 50 μm 20 px black scale bar with 30pt text to the bottom right of each image and flatten it, then closes the orignal images.
-
 
 - **BFscalebar50_notext_allOpenFiles**
 
@@ -90,8 +78,6 @@ Only processes the currently selected image. Use this if the allOpenFiles versio
 - **BFscalebar100**
 
 The 100μm version of BFscalebar50. Note that this also only processes the currently selected image.
-
-> *TODO: Make an "all open files" and "specific folder" version of this*
 
  - **scalebar100split** 
 

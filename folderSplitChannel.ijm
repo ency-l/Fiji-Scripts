@@ -11,8 +11,7 @@ if (list.length == 0) {
 }
 
 // Loop through each open image and apply run() function
-for (i = 0; i < list.length; i++) {
-if (endsWith(list[i], ".tif") || endsWith(list[i], ".tiff")) {
+for (i = 0; i < list.length; i++) {if (endsWith(list[i], ".tif") || endsWith(list[i], ".tiff")) {
 
 	open(inputDir + list[i]);
     getDimensions(width, height, channels, slices, frames);
@@ -31,7 +30,6 @@ if (endsWith(list[i], ".tif") || endsWith(list[i], ".tiff")) {
 	close("*");
 	print("Processed"+i+1+"/"+list.length+" files.");
 
-}
-}
+}}
 close("*");
-print("Finished OwO");
+print("Processing completed. All files saved in: " + outputDir);

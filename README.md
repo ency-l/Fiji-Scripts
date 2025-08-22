@@ -21,7 +21,7 @@ Self explanatory. Save everything that's open to a specified folder with the cur
 
 Splits all multichannel tiffs in a folder and save them to another folder. Technically redundant with the split&scalebar tool but there are cases where it's easier to just use this one.
 
-- **FolderSplitandSave**
+- **folderSplitter**
 
 Oops seems I accidently remade the same thing. Might compare and delete one later.
 

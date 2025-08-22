@@ -2,7 +2,7 @@
 // This is intended for downstream analysis, not generating presentation images.
 
 inputDir = getDirectory("Choose a folder containing TIFF files");
-saveDir = getDirectory("Choose a folder to save TIFF files");
+saveDir = getDirectory("Choose a folder to save split TIFF files");
 list = getFileList(inputDir);
 setBatchMode("hide");
 

@@ -1,8 +1,23 @@
-Updated: 2025-8-22
+Updated: 2025-8-29
 
 >This repository is a remote version of `Drive 8\Alex\4_IJ Macros`. Copies of scripts in other places are not maintained and are likley dated.
 
 # File list
+## Groovy Scripts for QuPath
+
+*Still haven't made peace with Groovy's grammar yet. These are just some basic stuff.*
+- **saveRegions**
+
+Export all annotations to .tiffs for downstream analysis.
+
+- **annotatedInfo**
+
+Prints in terminal the number of annotation in each image in the project. I made this as a quick way to check which image has been annotated.
+
+- **annotatedInfo_count**
+
+Does everything annotatedInfo does, but also count annotations that belongs to two classes of one's choice. (can be more, but only 2 was needed when this was initially made) Export the number of annotations belonging to each class in each image to a csv file. 
+
 ## General Purpose Tools
 
 - **Folder_Split_ScaleBar_customizable**
@@ -62,32 +77,40 @@ Takes folder input and output measurements to an .xslx in downloads folder (desi
 The microglia version of the script above. Fully automated. Nucleus is segmented and those with bad IBA1 overlap (<50%) is removed, then only the largest object is kept (remove random nuc fragments that might got included on the edge). Measures CRM intensity at nucelus and cytoplasm (created by subtracting nucleus region from full IBA1 ROI.) Improved log function compared to the neuron version.
 
 # Archived
-These scripts are obsolete and have better alternatives in the root menu.
+*These scripts are either 1) not working as intended or 2) have better alternatives in the list above. They are included here purely for documentation purposes.*
 
-- **MicroGliaXPO**
+- **MicroGliaXPO** `(obsolete)`
+
+Replaced by CRM_MicroGlia_new
 
  For a given input folder, detects all nuclei that have overlap with microglia marker IBA1, segment these regions and measure the XPO (c2, green) intensity in these regions. Export measurements to an excel sheet at a specified output folder. Measurement from diff files will be saved as adjacent columns in the same spreadsheet. Also saves a binary tiff of the region being measured from each input file in the output folder.
 
-- **CRMnuc**
+- **CRMnuc** `(obsolete)`
+
+Replaced by CRM_neurons_new
 
 Measures the intensity of C2 in the nucleus and the cytoplasm area immediately surrounding it. The later is measured for calculating N/C fraction. Currently this only works with one image open.
 
-- **BFscalebar50_allOpenFiles**
+- **BFscalebar50_allOpenFiles** `(obsolete)`
 
 Adds a horizontol 50 μm 20 px black scale bar with 30pt text to the bottom right of each image and flatten it, then closes the orignal images.
 
-- **BFscalebar50_notext_allOpenFiles**
+- **BFscalebar50_notext_allOpenFiles** `(obsolete)`
 
 Same but doesn't have text.
 
-- **BFscalebar50_single**
+- **BFscalebar50_single** `(obsolete)`
 
 Only processes the currently selected image. Use this if the allOpenFiles versions are buggy.
 
-- **BFscalebar100**
+- **BFscalebar100** `(obsolete)`
 
 The 100μm version of BFscalebar50. Note that this also only processes the currently selected image.
 
- - **scalebar100split** 
+ - **scalebar100split**  `(obsolete)`
 
 Scale bar script for multichannel images. Split the channels and add a white 100μm scale bar (20px, bottom right, 30px text) to the composite RGB image. This script is intended for creating images for <ins>presentation</ins>, NOT analysis. What this means is that it changes individual channel files to RGB color mode. Currently needs to manually save the files after they are created.
+
+- **removeholes** and **removeholes_manual** `(broken)`
+
+Was an attempt at a quick way to segment the area containing tissue vs background using QuPath' IJ script runner. Couldn't find a way to process the image so that the foreground can be consistently and correctly detected when the beginning signal levels vary. Tried circumventing this issue by prompting manual thresholding from user ("manual") but it keeps breaking in QP's IJ instance for some reason.

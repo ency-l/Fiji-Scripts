@@ -40,6 +40,11 @@ For measuring TDP-43 in white matter tracts in spinal cord. Takes green(c2) TDP 
 
 For measuring intensity of Ataxin-2 and related proteins of interest in neurons. PABP1 and TDP-43 agg co-loc analysis will be added in the future.
 
+## S1R Project
+- **S1R_cellArea_SSCCountArea** 
+
+Analyzes the S1R channel. For measuring 1) cell area and 2)individual SSC count/area/mean in each cell. Outputs an annotated merged image of the detected cell border/SSC borders for manual review and a csv of all measurements. Works most of the time but there are about 10% of cases where the segmentation fails, esp SSCs.
+
 ## SOD Microglia Exportin/Nuc Pore Complex Project (Gulshan) 
 
 

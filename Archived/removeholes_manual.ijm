@@ -1,4 +1,7 @@
-
+// Intended for running in QuPath IJ script runner to quickly generate ROI for non-void (actual tissue) area.
+// Avoids IJ's bad threshold performance when dealing with highly variable signal by promopting manual thresholding from user.
+//  Doesn't work with whatever IJ instance QP is running though.
+// THIS THEORETICALLY WORKS 
 //run("Duplicate...", "duplicate channels=2");
 run("16-bit");
 run("Enhance Contrast...", "saturated=5");

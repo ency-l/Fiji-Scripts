@@ -36,7 +36,7 @@ Dialog.addMessage("Only support up to 4 channels. \n Leave empty if the channel 
 Dialog.addString("Channel 1 Name", "DAPI");
 Dialog.addString("Channel 2 Name", "FITC");
 Dialog.addString("Channel 3 Name", "TRITC");
-Dialog.addString("Channel 4 Name", "Cy3");
+Dialog.addString("Channel 4 Name", "Cy5");
 Dialog.addNumber("Scale bar size (um): ", 20);
 Dialog.addNumber("Scale bar thickness (px): ", 10);
 Dialog.addChoice("Scale bar color: ",colors,"White");

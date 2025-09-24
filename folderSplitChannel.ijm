@@ -20,11 +20,22 @@ for (i = 0; i < list.length; i++) {if (endsWith(list[i], ".tif") || endsWith(lis
 	    run("Make Subset...", "channels=1-"channels+" slices=3");	//Choose the desired z if there a z stack.
 	}
     title=getTitle();
+    call("ij.ImagePlus.setDefault16bitRange", 16);
     run("Split Channels");
 	for (c = 1; c <=channels; c++) {
 		selectImage("C"+c+"-"+title);
 		splitTitle=getTitle();
-		resetMinAndMax;
+		//resetMinAndMax;
+		if (c==1) {
+			setMinAndMax(2000, 50000);
+		}
+		else if (c!=4){
+			setMinAndMax(200, 18000);
+		}
+		else {
+			setMinAndMax(200, 3000);
+		}
+		run("RGB Color");
 		saveAs("tiff",saveDir+splitTitle);
 	}
 	close("*");
@@ -32,4 +43,4 @@ for (i = 0; i < list.length; i++) {if (endsWith(list[i], ".tif") || endsWith(lis
 
 }}
 close("*");
-print("Processing completed. All files saved in: " + outputDir);
+print("Processing completed. All files saved in: " + saveDir);

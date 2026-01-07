@@ -8,11 +8,29 @@ if (numImages == 0) {
 
 // Loop through each open image and apply run() function
 for (i = 1; i <= numImages; i++) {
-    selectImage(i);
+    title=getTitle();
+getDimensions(width, height, channels, slices, frames);
+if(channels>1){
+	
+	selectImage(i);
+
+/*    	Stack.setDisplayMode("color");
+    call("ij.ImagePlus.setDefault16bitRange", 16);
+	//run("Split Channels");
 // Sub out the run(...) line for different commands!
-    run("Subtract Background...", "rolling=50");
-    run("Measure");
-    close("*");
+for(c=1;c<=channels;c++){
+Stack.setDisplayMode("composite");
+	Stack.setChannel(c);
+//	selectImage("C"+c+"-"+title);
+  	run("RGB Color");
+ 	saveAs("png","E:/Alex/5_Misc_projs/Gitler_DAMNs/Export_edited/C"+c+"_"+title);
+    close();*/
+    run("Scale Bar...", "width=50 height=20 font=20 horizontal bold overlay");
+    run("Flatten");
+    saveAs("png","E:/Alex/5_Misc_projs/Gitler_DAMNs/Export_edited/SB50_"+title);
+
 }
-close("*");
+
+
+
 print("OwO How did i do");

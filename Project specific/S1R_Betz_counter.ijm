@@ -6,7 +6,7 @@
 #@ File (label = "Output directory", style = "directory") output
 #@ String (label = "File suffix", value = ".tif") suffix
 
-//setBatchMode("hide");   
+setBatchMode("hide");   
 cleanEnviron();
 processFolder(input);
 print("Finished");
@@ -34,7 +34,7 @@ function processImage(file){
 	group=title_arr[1];
 	case=title_arr[0];
 	region=title_arr[2];
-//	class=title_arr[5]; //options: null, VChat-S1R
+	class=title_arr[5]; //options: null, Betz, Pyr
 	cellid=substring(title_arr[6],0,indexOf(title_arr[6], ".tif"));
 	infoString="Case "+case+" "+region+" cell "+cellid+"";
 		
@@ -85,7 +85,7 @@ function processImage(file){
 	roiManager("delete");
 	roiManager("select", roiIndexOf("cell_outline"));
 	cellArea=getValue("Area");
-
+	mxFeret=getValue("Feret");
 	
 	selectImage("backup");
 	roiManager("Set Color", "white");
@@ -98,9 +98,9 @@ function processImage(file){
 	setResult("Case", nResults-1, case);
 	setResult("Region", nResults-1, region);
 	setResult("Cell ID", nResults-1, cellid);
-	setResult("Object", nResults-1, "Cell");
-//			setResult("Area seg warning",nResults-1, warnflag);
-	setResult("Cell Area (um^2)",nResults-1, cellArea);
+	setResult("Cell Type", nResults-1, class);
+	setResult("Max Diam (μm)",nResults-1, mxFeret);
+	setResult("Cell Area (μm^2)",nResults-1, cellArea);
 	setResult("Mean S1R", nResults-1, meanS1R);
 	updateResults();
 
@@ -111,7 +111,7 @@ function processImage(file){
 	}
 	run("Select None");
 	run("From ROI Manager");	//convert all ROImngr objects to overlay
-
+	run("Scale Bar...", "width=20 bold hide overlay");
 	run("Flatten");
 	saveAs("Tiff", output+File.separator+case+"_"+region+"_"+cellid+"_seg.tif");
 	if (roiManager("count")>0){

@@ -137,9 +137,8 @@ function processImage(file){
 	    	temp[i] = 1 + i;
 			roiManager("select", temp);
 			roiManager("Set Color", "green");
-			VAChTBeginId=roiManager("count");
 			}
-			
+			VAChTBeginId=roiManager("count");
 			processSSC("VAChT");
 			temp = newArray(roiManager("count")-VAChTBeginId);
 			if (temp.length>0){

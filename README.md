@@ -52,8 +52,9 @@ For measuring TDP-43 in white matter tracts in spinal cord. Takes green(c2) TDP 
 For measuring intensity of Ataxin-2 and related proteins of interest in neurons. PABP1 and TDP-43 agg co-loc analysis will be added in the future.
 
 ## S1R Project
-- **S1R_cellArea_SSCCountArea**:
-Analyzes the S1R channel. For measuring 1) cell area and 2) individual SSC count/area/mean in each cell. Outputs an annotated merged image of the detected cell border/SSC borders for manual review and a csv of all measurements. Works most of the time but there are about 10% of cases where the segmentation fails, esp SSCs.
+- **S1R_SSC_counter_new**:
+For analzing cell and subcellular features in the S1R project. Input: 3 channel (DAPI, TRTIC, Cy3) tiff _with an existing selection overlay_. Segments cell body outline with Cy3 (should be smaller than the exisiting overlay) and get mean in TRITC and Cy3. For TRITC and Cy3 channel, also segment individual puncta using Niblack from the auto local threshold plugin. Segmented puncta are then filterd by a z score (curretly z=0) before measurements are generated. Measurements: mean, area, center of mass (x,y). Also outputs an image showing outlines of all segemented features overlayed on the origianl image, but this is currently a bit buggy (ROI that were filtered out and removed from ROI manager are still showing up.) Outputs tiff and csv.
+
 
 ## SOD Microglia Exportin/Nuc Pore Complex Project (Gulshan) 
 
@@ -70,6 +71,10 @@ The microglia version of the script above. Fully automated. Nucleus is segmented
 
 # Archived
 *These scripts are either 1) not working as intended or 2) have better alternatives in the list above. They are included here purely for documentation purposes.*
+
+- **S1R_cellArea_SSCCountArea** `(obsolete)` **Replaced by S1R_SSC_counter_new**:
+Analyzes the S1R channel. For measuring 1) cell area and 2) individual SSC count/area/mean in each cell. Outputs an annotated merged image of the detected cell border/SSC borders for manual review and a csv of all measurements. Works most of the time but there are about 10% of cases where the segmentation fails, esp SSCs.
+
 
 - **MicroGliaXPO** `(obsolete)` **Replaced by CRM_MicroGlia_new**: 
  For a given input folder, detects all nuclei that have overlap with microglia marker IBA1, segment these regions and measure the XPO (c2, green) intensity in these regions. Export measurements to an excel sheet at a specified output folder. Measurement from diff files will be saved as adjacent columns in the same spreadsheet. Also saves a binary tiff of the region being measured from each input file in the output folder.

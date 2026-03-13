@@ -1,8 +1,8 @@
 //
 //-------------Change this!----------
-size=50;        //unit is micron
-color="White" //Make sure you capitalize
-text=false;    //change this to "true" if you want text
+size=100;        //unit is micron
+color="White"; //Make sure you capitalize
+text=true;    //change this to "true" if you want text
 saveFolder="";    //put in the path to folder you want to save it in. If there are backslashes("\"), please change them into double-backslash ("\\").
 
 // If saveFolder is left blank, will save in the default user directory.     

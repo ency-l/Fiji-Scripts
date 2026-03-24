@@ -23,6 +23,8 @@ function processFolder(input) {
 	for (i = 0; i < list.length; i++) {
 		if(endsWith(list[i], suffix)){
 			processImage(list[i]);
+//			waitForUser;
+
 		}
 	}
 }
@@ -82,6 +84,8 @@ function processImage(file){
 		run("Enhance Contrast", "saturated=2");
 		setAutoThreshold("Mean dark no-reset");	//using Mean for now
 		run("Convert to Mask");
+		
+		//binary ops
 		run("Keep Largest Region");
 		run("Fill Holes");
 		run("Erode");
@@ -91,13 +95,14 @@ function processImage(file){
 		setOption("BlackBackground", true);
 		run("Convert to Mask");
 		run("Fill Holes");
+		
 		run("Create Selection");
 		roiManager("add");
-		roiManager("select", 1);
+		roiManager("select", 1);	//[0] is current being used by ROI (manually segmented cell boundary）
 		roiManager("rename", "cell_outline");
-		roiManager("select", roiIndexOf("ROI"));
-		roiManager("delete");
-		roiManager("select", roiIndexOf("cell_outline"));
+		roiManager("select", roiIndexOf("ROI"));	
+		roiManager("delete");	//not anymore
+		roiManager("select", roiIndexOf("cell_outline"));	//cell_outline should be ROIM[0]
 		cellArea=getValue("Area");
 
 		
@@ -156,8 +161,13 @@ function processImage(file){
 			}
 			
 			//only running coloc if at least one S1R and VAChT punta are detected
-			if (ids_S1R.length>0 && ids_VAC>0)
-				{coloc(ids_S1R,ids_VAC);}		// running this should add a line to the "Coloc" table per each image analyzed
+			if (ids_S1R.length>0 && ids_VAC.length>0){
+				print("		Puncta detected, checking S1R ("+ids_S1R.length+") and VAChT ("+ids_VAC.length+") coloc...");
+				coloc(ids_S1R,ids_VAC);					
+//				print(count+" puncta found.");
+				}		// running this should add a line to the "Coloc" table per each image analyzed
+				
+
 
 
 
@@ -208,7 +218,7 @@ function processSSC(name){
 	Mean=getValue("Mean");
 	SD=getValue("StdDev");
 	k=Mean;
-	print(k);
+//	print(k);
 	run("Duplicate...","duplicate ignore title=temp");
 	run("8-bit");
 	run("Auto Local Threshold", "method=Niblack radius=30 parameter_1=2 parameter_2=0 white");
@@ -276,6 +286,7 @@ function cleanEnviron(){
 	close("*");
 	print("\\Clear");
 }
+
 function roiIndexOf(roiName) { 	//returns index of roi whose name==roiName. returns -1 (no selection) if none found.
 	nR = roiManager("Count"); 
 
@@ -290,13 +301,14 @@ function roiIndexOf(roiName) { 	//returns index of roi whose name==roiName. retu
 } 
 function coloc(arr1,arr2){		//each arr is a group of ints that point to ROIM object indices
 	dist_threshold=20;
-	colocFlag=False;
-	for (i=arr1[0],i<arr1.length,i++){
+	colocFlag=0;
+	counter=0;
+	for (i=arr1[0];i<arr1[arr1.length-1];i++){
 		obj1=roiManager("select",i);
 		X1=getValue("XM");
 		Y1=getValue("YM");
 		NND=99999;	//initialize a very large value
-		for (j=arr2[0],j<arr2.length,j++){
+		for (j=arr2[0];j<arr2[arr2.length-1];j++){
 			obj2=roiManager("select",j);
 			X2=getValue("XM");
 			Y2=getValue("YM");
@@ -304,36 +316,44 @@ function coloc(arr1,arr2){		//each arr is a group of ints that point to ROIM obj
 			if (dist<NND){	//compare if the current distance is nearer than before
 				NND=dist;	//replace the "current nearest distance" whenever a new nearest neighbohr is found
 				if(NND<=dist_threshold){	//only evaluate coloc status if a new nearest neighbohr is found (else once a subthreshold NND is found, every following obj will be evaled as true)
-					colocFlag=True;	//enable overlap analysis
+					colocFlag=1;	//enable overlap analysis
 				}
 			}
-			if (colocFlag==True){	//only measure overlap if they are close enough
+			if (colocFlag==1){	//only measure overlap if they are close enough
+//				selectImage(); 
 				roiManager("select",newArray(i,j));
 				roiManager("AND");
-				roiManager("Add");
-				roiManager("select",roiManager("count")-1) //select the AND roi
-				area_and=getValue("Area");
-				roiManager("delete");			//remove the AND roi (to minimize having too many types of things in the ROIM index list)
-				roiManager("select",newArray(i,j));
-				roiManager("OR");
-				roiManager("Add");
-				roiManager("select",roiManager("count")-1) //select the OR roi
-				area_or=getValue("Area");
-				roiManager("delete");
-				
-				selectWindow("Coloc")						//ensure Coloc is the active table
-				Table.set("Case", Table.size,1);		 	//add a row to Coloc for every pair of colocalizing objs
-				Table.set("Cell ID", Table.size,cellid)		//this is run every time a new image (cell) is read, so for every i,j pair from the same cell they will inherit the same case and cellid value		
-				Table.set("Obj1_Index", Table.size,i);
-				Table.set("Obj2_Index", Table.size,j);
-				Table.set("CoM Distance", Table.size,dist);
-				Table.set("Overlap Ratio", Table.size,(area_and/area_or));
-				Table.set("Obj1_Coord", Table.size,(X1+", "+Y1));
-				Table.set("Obj2_Coord", Table.size,(X2+", "+Y2));
-				Table.set("Union", Table.size,area_or);
-				Table.set("Intersect", Table.size,area_and);
+				if (selectionType()!=-1){	//that there IS overlap
+					roiManager("Add");
+					roiManager("select",roiManager("count")-1) //select the AND roi
+					area_and=getValue("Area");
+					roiManager("delete");			//remove the AND roi (to minimize having too many types of things in the ROIM index list)
+					roiManager("select",newArray(i,j));
+					roiManager("OR");
+					roiManager("Add");
+					roiManager("select",roiManager("count")-1) //select the OR roi
+					area_or=getValue("Area");
+					roiManager("delete");
+					selectWindow("Coloc");						//ensure Coloc is the active table
+					Table.set("Case", Table.size,case);		 	//add a row to Coloc for every pair of colocalizing objs
+					Table.set("Cell ID", Table.size-1,cellid)		//this is run every time a new image (cell) is read, so for every i,j pair from the same cell they will inherit the same case and cellid value		
+					Table.set("Obj1_Index", Table.size-1,i);
+					Table.set("Obj2_Index", Table.size-1,j);
+					Table.set("CoM Distance", Table.size-1,dist);
+					Table.set("Overlap Ratio", Table.size-1,(area_and/area_or));					
+					Table.set("Obj1_Coord_X", Table.size-1,(X1));
+					Table.set("Obj2_Coord_X", Table.size-1,(X2));
+					Table.set("Obj1_Coord_Y", Table.size-1,(Y1));
+					Table.set("Obj2_Coord_Y", Table.size-1,(Y2));
+					Table.set("Union", Table.size-1,area_or);
+					Table.set("Intersect", Table.size-1,area_and);
+					Table.update;
+					counter=counter+1;
+				}
+				colocFlag=0; //reset flag for next puncta pair (i,j++)
 
 			}
 		}
 	}
+	print("		"+counter+" colocalizations found. (threshold="+dist_threshold+")");
 }

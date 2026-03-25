@@ -2,7 +2,7 @@
 // For each tiff that has: (DAPI, S1R, VAChT),create ROI for each S1R and VAChT punctum
 // For each punctum, calculate mean intensity and area
 // Punctum whose mean intensity is lower than that of the whole cell in the corresponding channel (i.e. darker than the cell) is discarded.
-//TODO: calculate colocalization for all above-threshold S1R and VAChT
+//Also calculate colocalization for all above-threshold S1R and VAChT
 
 #@ File (label = "Input directory", style = "directory") input
 #@ File (label = "Output directory", style = "directory") output
@@ -13,8 +13,10 @@ cleanEnviron();
 Table.create("Coloc");	//initialze empty table for storing coloc analyses outside the iters
 processFolder(input);
 print("Finished");
+Table.save(output+File.separator+"Coloc.csv");
+selectWindow("Results");
 saveAs("Results", output+File.separator+"Results.csv");
-Table.save(output+File.separator+"Coloc.csv")
+
 
 function processFolder(input) {
 	list = getFileList(input);
@@ -121,7 +123,6 @@ function processImage(file){
 		selectImage("S1R");
 		meanS1R=getValue("Mean");
 		channelsArr=newArray(meanS1R,meanVAChT);	//save mean measurements
-
 		//display results for cell-level measurements
 		for (i = 0; i < 2; i++) {
 			setResult("Group", nResults, group);
@@ -138,11 +139,13 @@ function processImage(file){
 			updateResults();
 		}
 		if(s1rflag==true){
+	 		Overlay.drawLabels(true);
+
 			processSSC("S1R");
 			//use a seperate array to keep track of the ROIM indices of S1R and VAChT objects (they are all saved in the same list)
 			//set the size to match number of s1r objects
 			ids_S1R = newArray(roiManager("count")-1);
-			if (ids_S1R.length>0){	
+			if (ids_S1R.length>0){
 			for (i = 0; i < ids_S1R.length; i++)
 	    	ids_S1R[i] = 1 + i;	//starting index at 1 because ROIM[0] is the cell object.
 			roiManager("select", ids_S1R);	//select all objects from 1 to last
@@ -162,13 +165,9 @@ function processImage(file){
 			
 			//only running coloc if at least one S1R and VAChT punta are detected
 			if (ids_S1R.length>0 && ids_VAC.length>0){
-				print("		Puncta detected, checking S1R ("+ids_S1R.length+") and VAChT ("+ids_VAC.length+") coloc...");
+				print("["+infoString+"] Puncta: S1R ("+ids_S1R.length+"), VAChT ("+ids_VAC.length+") Checking coloc...");
 				coloc(ids_S1R,ids_VAC);					
-//				print(count+" puncta found.");
 				}		// running this should add a line to the "Coloc" table per each image analyzed
-				
-
-
 
 
 		}
@@ -192,6 +191,7 @@ function processImage(file){
 	else{
 		print("Image without puncta class detected. Skipping...");
 	}
+	print("----------------------");
 	close("*");
 }
 	
@@ -214,10 +214,10 @@ function processSSC(name){
 	selectImage(name);
 	roiManager("select", roiIndexOf("cell_outline")); //select the cell boundary that was just segmented
 	run("Clear Outside");
-	roimBegin=roiManager("count");
+	roimBegin=roiManager("count");	//number of existing puncta before this channel is processed (for S1R, =1; for VAChT, =n(S1R)+1)
 	Mean=getValue("Mean");
 	SD=getValue("StdDev");
-	k=Mean;
+	meanCutoff=Mean;
 //	print(k);
 	run("Duplicate...","duplicate ignore title=temp");
 	run("8-bit");
@@ -238,25 +238,36 @@ function processSSC(name){
 		}
 	close("temp");
 	close("Mask of temp");
-
+		for (k = roimBegin; k < roiManager("count"); k++) {	//remove the bad once before formally indexing them
+//			print("k="+k);
+		    roiManager("select", k);
+			roiManager("update");
+			selectImage(name);
+			ssc_mean=getValue("Mean");
+			if(ssc_mean<meanCutoff){
+				roiManager("delete");
+				print(name+" puncta "+k+" is below cell mean, deleted.");
+			}
+		}
 		for (j = roimBegin; j < roiManager("count"); j++) {	//iterate through each SSC
+//			print("j="+j);
 		    roiManager("select", j);
 			roiManager("rename", "SSC_"+j);
 			roiManager("update");
 			roiManager("Set Line Width", 1);
 			selectImage(name);
 			ssc_mean=getValue("Mean");
-			if(ssc_mean<k){
-				roiManager("delete");
-				}
-			else{
+//			if(ssc_mean<k){
+//				roiManager("delete");
+//			}
+//			else{
 		    roiManager("select", j);
 			List.set("Name",j);
 			List.set("Area", getValue("Area"));
 			List.set("Xmass",getValue("XM"));
 			List.set("Ymass",getValue("YM"));
 			List.set("Circularity",getValue("Circ."));
-
+			selectWindow("Results");	
 			setResult("Group", nResults, group);
 			setResult("Case", nResults-1, case);
 			setResult("Region", nResults-1, region);
@@ -268,7 +279,7 @@ function processSSC(name){
 			setResult("SSC Mean", nResults-1, ssc_mean);
 			setResult("SSC Mean Norm", nResults-1,ssc_mean/meanS1R);
 			setResult("SSC CoM",nResults-1,List.get("Xmass")+", "+List.get("Ymass"));
-			}
+//			}
 		
 		}	
 	updateResults();
@@ -300,16 +311,22 @@ function roiIndexOf(roiName) { 	//returns index of roi whose name==roiName. retu
 	return -1; 
 } 
 function coloc(arr1,arr2){		//each arr is a group of ints that point to ROIM object indices
+	Array.show(arr1);
+	Array.show(arr2);
 	dist_threshold=20;
 	colocFlag=0;
 	counter=0;
-	for (i=arr1[0];i<arr1[arr1.length-1];i++){
+	for (i=arr1[0];i<=arr1[arr1.length-1];i++){
+//		print("i="+i);
 		obj1=roiManager("select",i);
+		Area1=getValue("Area");
 		X1=getValue("XM");
 		Y1=getValue("YM");
 		NND=99999;	//initialize a very large value
-		for (j=arr2[0];j<arr2[arr2.length-1];j++){
+		for (j=arr2[0];j<=arr2[arr2.length-1];j++){
+//			print("j="+j);
 			obj2=roiManager("select",j);
+			Area2=getValue("Area");
 			X2=getValue("XM");
 			Y2=getValue("YM");
 			dist=Math.sqrt(Math.pow(Math.abs(X1-X2),2)+Math.pow(Math.abs(Y1-Y2),2));	//CoM distance is the hypotenuse of the x and y distances
@@ -334,13 +351,17 @@ function coloc(arr1,arr2){		//each arr is a group of ints that point to ROIM obj
 					roiManager("select",roiManager("count")-1) //select the OR roi
 					area_or=getValue("Area");
 					roiManager("delete");
+					print("Coloc pair found: S1R puncta No."+i+" and VAChT punta No."+j+".");
 					selectWindow("Coloc");						//ensure Coloc is the active table
+//					Table.set("Spacer", Table.size,"");		 	//add a row to Coloc for every pair of colocalizing objs
 					Table.set("Case", Table.size,case);		 	//add a row to Coloc for every pair of colocalizing objs
-					Table.set("Cell ID", Table.size-1,cellid)		//this is run every time a new image (cell) is read, so for every i,j pair from the same cell they will inherit the same case and cellid value		
+					Table.set("Cell ID", Table.size-1,cellid);		//this is run every time a new image (cell) is read, so for every i,j pair from the same cell they will inherit the same case and cellid value		
 					Table.set("Obj1_Index", Table.size-1,i);
 					Table.set("Obj2_Index", Table.size-1,j);
 					Table.set("CoM Distance", Table.size-1,dist);
-					Table.set("Overlap Ratio", Table.size-1,(area_and/area_or));					
+					Table.set("Overlap Ratio", Table.size-1,(area_and/area_or));
+					Table.set("Intersect/Obj1",Table.size-1,(area_and/Area1));
+					Table.set("Intersect/Obj2",Table.size-1,(area_and/Area2));
 					Table.set("Obj1_Coord_X", Table.size-1,(X1));
 					Table.set("Obj2_Coord_X", Table.size-1,(X2));
 					Table.set("Obj1_Coord_Y", Table.size-1,(Y1));
@@ -355,5 +376,5 @@ function coloc(arr1,arr2){		//each arr is a group of ints that point to ROIM obj
 			}
 		}
 	}
-	print("		"+counter+" colocalizations found. (threshold="+dist_threshold+")");
+	print("["+infoString+"] Coloc: "+counter+" coloc pairs found. (threshold="+dist_threshold+")");
 }

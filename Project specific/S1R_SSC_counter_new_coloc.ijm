@@ -311,8 +311,8 @@ function roiIndexOf(roiName) { 	//returns index of roi whose name==roiName. retu
 	return -1; 
 } 
 function coloc(arr1,arr2){		//each arr is a group of ints that point to ROIM object indices
-	Array.show(arr1);
-	Array.show(arr2);
+	// Array.show(arr1);
+	// Array.show(arr2);
 	dist_threshold=20;
 	colocFlag=0;
 	counter=0;

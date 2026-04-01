@@ -182,7 +182,7 @@ function processImage(file){
 		//convert all ROImngr objects to overlay
 		run("Flatten");
 //saves results preview output image!!!
-		saveAs("Tiff", output+File.separator+case+"_"+region+"_"+cellid+suffix+"_mean.tif");
+		saveAs("Tiff", output+File.separator+case+"_"+region+"_cell"+cellid+"_mean.tif");
 		if (roiManager("count")>0){
 			roiManager("deselect");
 			roiManager("delete");
@@ -246,7 +246,7 @@ function processSSC(name){
 			ssc_mean=getValue("Mean");
 			if(ssc_mean<meanCutoff){
 				roiManager("delete");
-				print(name+" puncta "+k+" is below cell mean, deleted.");
+				print(name+" puncta "+k+" is below cutoff, deleted.");
 			}
 		}
 		for (j = roimBegin; j < roiManager("count"); j++) {	//iterate through each SSC
@@ -356,6 +356,7 @@ function coloc(arr1,arr2){		//each arr is a group of ints that point to ROIM obj
 //					Table.set("Spacer", Table.size,"");		 	//add a row to Coloc for every pair of colocalizing objs
 					Table.set("Case", Table.size,case);		 	//add a row to Coloc for every pair of colocalizing objs
 					Table.set("Cell ID", Table.size-1,cellid);		//this is run every time a new image (cell) is read, so for every i,j pair from the same cell they will inherit the same case and cellid value		
+					Table.set("Region", Table.size-1,region);
 					Table.set("Obj1_Index", Table.size-1,i);
 					Table.set("Obj2_Index", Table.size-1,j);
 					Table.set("CoM Distance", Table.size-1,dist);

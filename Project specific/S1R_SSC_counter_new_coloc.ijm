@@ -25,10 +25,11 @@ function processFolder(input) {
 	for (i = 0; i < list.length; i++) {
 		if(endsWith(list[i], suffix)){
 			processImage(list[i]);
-//			waitForUser;
 
 		}
 	}
+	logContent = getInfo("log");
+	File.saveString(logContent, output+File.separator+"log.txt");
 }
 
 
@@ -106,8 +107,13 @@ function processImage(file){
 		roiManager("delete");	//not anymore
 		roiManager("select", roiIndexOf("cell_outline"));	//cell_outline should be ROIM[0]
 		cellArea=getValue("Area");
-
-		
+		selectImage("VAChT");
+		roiManager("select", roiIndexOf("cell_outline"));
+		meanVAChT=getValue("Mean");
+		selectImage("S1R");
+		roiManager("select", roiIndexOf("cell_outline"));
+		meanS1R=getValue("Mean");
+		channelsArr=newArray(meanS1R,meanVAChT);	//save mean measurements
 		selectImage("backup");
 
 		
@@ -119,10 +125,9 @@ function processImage(file){
 		}
 
 		roiManager("Set Line Width", 1);
-		meanVAChT=getValue("Mean");
-		selectImage("S1R");
-		meanS1R=getValue("Mean");
-		channelsArr=newArray(meanS1R,meanVAChT);	//save mean measurements
+
+
+
 		//display results for cell-level measurements
 		for (i = 0; i < 2; i++) {
 			setResult("Group", nResults, group);
@@ -181,8 +186,9 @@ function processImage(file){
 		
 		//convert all ROImngr objects to overlay
 		run("Flatten");
-//saves results preview output image!!!
+//saves results preview output image!!!x`
 		saveAs("Tiff", output+File.separator+case+"_"+region+"_cell"+cellid+"_mean.tif");
+//			waitForUser;
 		if (roiManager("count")>0){
 			roiManager("deselect");
 			roiManager("delete");
@@ -192,6 +198,7 @@ function processImage(file){
 		print("Image without puncta class detected. Skipping...");
 	}
 	print("----------------------");
+
 	close("*");
 }
 	
@@ -213,10 +220,12 @@ function getChannelInfo(ID){
 function processSSC(name){
 	selectImage(name);
 	roiManager("select", roiIndexOf("cell_outline")); //select the cell boundary that was just segmented
-	run("Clear Outside");
-	roimBegin=roiManager("count");	//number of existing puncta before this channel is processed (for S1R, =1; for VAChT, =n(S1R)+1)
 	Mean=getValue("Mean");
 	SD=getValue("StdDev");
+	run("Clear Outside");
+	roimBegin=roiManager("count");	//number of existing puncta before this channel is processed (for S1R, =1; for VAChT, =n(S1R)+1)
+
+
 	meanCutoff=Mean;
 //	print(k);
 	run("Duplicate...","duplicate ignore title=temp");
@@ -238,24 +247,24 @@ function processSSC(name){
 		}
 	close("temp");
 	close("Mask of temp");
+	selectImage(name);
 		for (k = roimBegin; k < roiManager("count"); k++) {	//remove the bad once before formally indexing them
 //			print("k="+k);
 		    roiManager("select", k);
-			roiManager("update");
-			selectImage(name);
+//			roiManager("update");
 			ssc_mean=getValue("Mean");
 			if(ssc_mean<meanCutoff){
 				roiManager("delete");
-				print(name+" puncta "+k+" is below cutoff, deleted.");
+				print(name+" puncta "+k+" ("+ssc_mean+") is below cutoff ("+meanCutoff+"), deleted.");
 			}
 		}
+	selectImage(name);
 		for (j = roimBegin; j < roiManager("count"); j++) {	//iterate through each SSC
 //			print("j="+j);
 		    roiManager("select", j);
 			roiManager("rename", "SSC_"+j);
 			roiManager("update");
 			roiManager("Set Line Width", 1);
-			selectImage(name);
 			ssc_mean=getValue("Mean");
 //			if(ssc_mean<k){
 //				roiManager("delete");
@@ -277,7 +286,12 @@ function processSSC(name){
 			setResult("SSC ID", nResults-1, List.get("Name"));
 			setResult("SSC Area", nResults-1, List.get("Area"));
 			setResult("SSC Mean", nResults-1, ssc_mean);
-			setResult("SSC Mean Norm", nResults-1,ssc_mean/meanS1R);
+			if(name=="S1R"){
+				setResult("SSC Mean Norm", nResults-1,ssc_mean/channelsArr[0]);
+			}
+			else{
+				setResult("SSC Mean Norm", nResults-1,ssc_mean/channelsArr[1]);		
+			}
 			setResult("SSC CoM",nResults-1,List.get("Xmass")+", "+List.get("Ymass"));
 //			}
 		

@@ -1,3 +1,4 @@
+package S1R;
 // Process tiffs in the input dir
 // For each tiff that has: (DAPI, S1R, TDP),create cell body ROI based on S1R
 // calculate mean intensity and area

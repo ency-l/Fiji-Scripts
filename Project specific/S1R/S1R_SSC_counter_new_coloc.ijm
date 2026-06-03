@@ -1,3 +1,4 @@
+package S1R;
 // Process tiffs in the input dir
 // For each tiff that has: (DAPI, S1R, VAChT),create ROI for each S1R and VAChT punctum
 // For each punctum, calculate mean intensity and area

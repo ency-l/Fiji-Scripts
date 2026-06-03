@@ -1,3 +1,4 @@
+package CRM_NPC;
 inputDir = getDirectory("Choose a folder containing TIFF files");
 outputDir = getDirectory("Choose a folder to save the measurement spreadsheet");
 
@@ -17,7 +18,8 @@ if (numImages == 0) {
 }
 /*if (numImages>1){
 	waitForUser("More than 1 image is open. Please close the ones you don't need. Otherwise the script misbehaves.";	
-}*/
+}
+*/
 
 run("Make Subset...", "channels=1,4");
 title = getTitle();
@@ -29,9 +31,11 @@ if (matches(title,".*[\\s\\(\\)\\-].*")==true) {
 selectImage(title);
 //run("Duplicate...", "duplicate");
 run("Split Channels");
-selectImage("C1-"+title); //dapi
+selectImage("C1-"+title);
+ //dapi
 resetMinAndMax;
-run("Enhance Contrast", "saturated=5");
+
+run("Enhance Contrast", "saturated=5");
 //waitForUser;
 //setMinAndMax(800, 2500);
 run("Gaussian Blur...", "sigma=2");
@@ -52,7 +56,8 @@ run("Area to Line");
 roiManager("Add");
 selectImage("C2-"+title); //tritc
 ROI_count=roiManager("count"); //starting from an empty ROIM, this should be 2.
-roiManager("Select", ROI_count-1); //select the line ROI (index=1)
+roiManager("Select", ROI_count-1);
+ //select the line ROI (index=1)
 roiManager("Set Line Width", 5);
 run("Measure");
 run("Select None");

@@ -1,4 +1,4 @@
-Updated: 2026-01-06
+Updated: 2026-06-02
 
 >This repository is a remote version of `Drive 8\Alex\4_IJ Macros`. Copies of scripts in other places are not maintained and are likley dated.
 
@@ -17,6 +17,9 @@ Does everything annotatedInfo does, but also count annotations that belongs to t
 
 ## General Purpose Tools
 
+-**clearEnvironment**:
+A snippet for quickly resetting the environment to initial state. Useful for testing. (I usually write this in as a function for longer scripts so that it can be called between each step)
+
 - **Folder_Split_ScaleBar_customizable**: 
 General use tool that processes a whole folder of the same type of images. Allow user to choose between brightfield (only adds scalebar) and fluorescent multichannel (splits channel and adds scalebar to a composite image) and customize scalebar features.
 
@@ -29,9 +32,11 @@ Self explanatory. Save everything that's open to a specified folder with the cur
 - **folderSplitChannel**: 
 Splits all multichannel tiffs in a folder and save them to another folder. Intended for preparing single channel images for downstream analysis.
 
+- **QB_quickSB**:
+Intended to be used in the ImageJ script runner in QuPath. Please see [accompanied pdf guide](https://github.com/ency-l/Fiji-Scripts/blob/main/Guide%20to%20QP_QuickSB.pdf) for details.
 
-- **saveSelectedRegions.groovy**: 
-Groovy script to export ROI annotations in Qupath. It will save all *selected* annotations as tiffs in `PROJECT_BASE_DIR/Export`. Original annoation borders are preserved as overlay.
+- **saveRegions.groovy**: 
+Groovy script to export ROI annotations in Qupath. It will save all annotations as tiffs in `PROJECT_BASE_DIR/Export`. Original annoation borders are preserved as overlay.
 
 - **generalPurposeAllOpenFiles_template**: 
 A template for creating more scripts that apply a set of actions to all open images.
@@ -53,8 +58,13 @@ For measuring intensity of Ataxin-2 and related proteins of interest in neurons.
 
 ## S1R Project
 - **S1R_SSC_counter_new**:
-For analzing cell and subcellular features in the S1R project. Input: 3 channel (DAPI, TRTIC, Cy3) tiff _with an existing selection overlay_. Segments cell body outline with Cy3 (should be smaller than the exisiting overlay) and get mean in TRITC and Cy3. For TRITC and Cy3 channel, also segment individual puncta using Niblack from the auto local threshold plugin. Segmented puncta are then filterd by a z score (curretly z=0) before measurements are generated. Measurements: mean, area, center of mass (x,y). Also outputs an image showing outlines of all segemented features overlayed on the origianl image, but this is currently a bit buggy (ROI that were filtered out and removed from ROI manager are still showing up.) Outputs tiff and csv.
+For analyzing cell and subcellular features in the S1R project. Input: 3 channel (DAPI, TRTIC, Cy3) tiff _with an existing selection overlay_. Segments cell body outline with Cy3 (should be smaller than the exisiting overlay) and get mean in TRITC and Cy3. For TRITC and Cy3 channel, also segment individual puncta using Niblack from the auto local threshold plugin. Segmented puncta are then filterd by a z score (curretly z=0) before measurements are generated. Measurements: mean, area, center of mass (x,y). Also outputs an image showing outlines of all segemented features overlayed on the origianl image, but this is currently a bit buggy (ROI that were filtered out and removed from ROI manager are still showing up.) Outputs tiff and csv.
 
+- **S1R_SSC_counter_new_coloc**:
+An addition to the `S1R_SSC_counter_new` script that added additionall colocalization measurements (object based overlap proportions). Outputs tiff and 2 csvs: One is the same results file as `S1R_SSC_counter_new`, additionally a coloc.csv that contains coloc measurements.
+
+- **S1R_data_merge.py**:
+Processes the two csvs (`Results.csv` and `Coloc.csv`) by combining their data and organize into a hierachical and (hopefully) easier to interpret structure. Outputs a xlsx file.
 
 ## SOD Microglia Exportin/Nuc Pore Complex Project (Gulshan) 
 

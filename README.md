@@ -38,6 +38,9 @@ Intended to be used in the ImageJ script runner in QuPath. Please see [accompani
 - **saveRegions.groovy**: 
 Groovy script to export ROI annotations in Qupath. It will save all annotations as tiffs in `PROJECT_BASE_DIR/Export`. Original annoation borders are preserved as overlay.
 
+- **renamer.groovy**:
+Batch renamer tool for QP image entries. Usually uses this to trimm the additional image info generated upon importing from a .vsi file.
+
 - **generalPurposeAllOpenFiles_template**: 
 A template for creating more scripts that apply a set of actions to all open images.
 

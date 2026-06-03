@@ -1,4 +1,4 @@
-//Save tiffs of selected annotations in project folder/Exported With image and class name. 
+//Save tiffs of  annotations in project folder/Exported With image and class name. 
 // Original annotation border is saved in overlay.
 import qupath.imagej.gui.*
 import ij.*

@@ -7,9 +7,10 @@ from tkinter import filedialog
 root = tk.Tk()
 root.withdraw()
 
-results_path = filedialog.askopenfilename(title="Select results.csv")
-coloc_path = filedialog.askopenfilename(title="Select coloc.csv")
-out_path=input("Output path (example: 'C:/User/Data/data.xlsx'):")
+results_path = filedialog.askopenfilename(title="Select Results.csv")
+coloc_path = filedialog.askopenfilename(title="Select Coloc.csv")
+out_path=filedialog.askdirectory(title="select a folder to save the results in.")
+out_path=f"{out_path}/merged_results.xlsx"
 print(f'Results: {results_path},\nColoc: {coloc_path},\nOutput: {out_path}')
 results=pd.read_csv(results_path)
 coloc=pd.read_csv(coloc_path)

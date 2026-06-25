@@ -18,11 +18,14 @@ The pipeline described below includes 4 files:
 4. `saveRegions.groovy`*
 
     \* These file live in the "Groovy" folder under the root directory. This is because they are general-use, non-S1R-project-specific scripts.
-<br>
-<br>   
+
 > Unfortunately, this workflow was not setup with portability in mind. It was designed for a very specific purpose and will only work when given the right inputs. I will try my best to explain.
+
+</br>
+
 ### Overview:
 ![workflow](workflow.png)
+
 ### Software requirements:
 The workflow was configured in the following environment:
 - QuPath 0.6.0

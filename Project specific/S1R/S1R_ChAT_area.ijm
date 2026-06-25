@@ -54,7 +54,7 @@ function processImage(file){
 run("Duplicate...","duplicate");
 rename("backup");
 selectImage(title);
-run("Duplicate...", "duplicate channels=4"); //2=ChAT, 3=TDP, 4=S1R
+run("Duplicate...", "duplicate channels=2"); //2=ChAT, 3=TDP, 4=S1R
 rename("chat");
 
 //run("Enhance Contrast...", "saturated=0.5");
